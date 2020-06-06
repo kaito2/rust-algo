@@ -46,6 +46,8 @@ mod test {
         assert_eq!(get_max_triangle_len(&a), 12);
         let a: Vec<u32> = vec![2, 3, 4, 5, 10];
         assert_eq!(get_max_triangle_len(&a), 12);
+        let a: Vec<u32> = vec![4, 5, 10, 20];
+        assert_eq!(get_max_triangle_len(&a), 0);
     }
 
     use std::collections::VecDeque;
