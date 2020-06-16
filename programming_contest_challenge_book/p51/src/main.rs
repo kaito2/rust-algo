@@ -27,27 +27,27 @@ fn main() {
 
 fn solve(l: &Vec<u64>) -> u64 {
     let mut l_halfway = l.clone();
-    let mut cost = 0;
+    let mut cost = l_halfway.iter().sum();
     if l_halfway.len() == 1 {
-        return l_halfway[1];
+        return cost;
     }
     while l_halfway.len() != 1 {
-        let mut min1_i = 0;
-        let mut min2_i = 1;
-        if l_halfway[min1_i] > l_halfway[min2_i] {
-            mem::swap(&mut min1_i, &mut min2_i);
+        let mut max1_i = 0;
+        let mut max2_i = 1;
+        if l_halfway[max1_i] < l_halfway[max2_i] {
+            mem::swap(&mut max1_i, &mut max2_i);
         }
         for i in 2..l_halfway.len() {
-            if l_halfway[i] < l_halfway[min2_i] {
-                min2_i = i;
+            if l_halfway[i] > l_halfway[max2_i] {
+                max2_i = i;
             }
-            if l_halfway[min2_i] < l_halfway[min1_i] {
-                mem::swap(&mut min1_i, &mut min2_i);
+            if l_halfway[max2_i] > l_halfway[max1_i] {
+                mem::swap(&mut max1_i, &mut max2_i);
             }
         }
-        l_halfway[min1_i] += l_halfway[min2_i];
-        l_halfway.remove(min2_i);
-        cost += l_halfway[min1_i];
+        l_halfway[max1_i] += l_halfway[max2_i];
+        cost += l_halfway[max1_i];
+        l_halfway.remove(max2_i);
     }
     cost
 }
