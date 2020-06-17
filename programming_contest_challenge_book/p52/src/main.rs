@@ -1,8 +1,31 @@
 use std::cmp;
 use std::collections::HashMap;
+use std::io::Read;
 
 fn main() {
-    println!("Hello, world!");
+    let mut buf = String::new();
+
+    // 標準入力から全部bufに読み込む
+    std::io::stdin().read_to_string(&mut buf).unwrap();
+
+    // 読み込んだStringを空白で分解する
+    // println!("buf: {:?}", buf);
+    buf = buf.replace("\n", " ");
+    buf = buf.replace("\r", " ");
+    let mut iter = buf.split_whitespace();
+
+    let n: i32 = iter.next().unwrap().parse().unwrap();
+    let w: i32 = iter.next().unwrap().parse().unwrap();
+
+    let wv: Vec<(i32, i32)> = (0..n)
+        .map(|_| {
+            let v = iter.next().unwrap().parse().unwrap();
+            let w = iter.next().unwrap().parse().unwrap();
+            (w, v)
+        })
+        .collect();
+    // println!("{:?}", wv);
+    println!("{}", solve(&wv, w));
 }
 
 fn solve(wv: &Vec<(i32, i32)>, w: i32) -> i32 {
