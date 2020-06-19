@@ -1,3 +1,4 @@
+use std::cmp;
 use std::io::Read;
 
 fn main() {
@@ -33,16 +34,14 @@ fn solve(w: &Vec<i32>, v: &Vec<i32>, max_w: i32) -> i32 {
     }
     for i in 0..w.len() {
         for j in 0..max_w + 1 {
-            let mut max = 0;
-            let mut k = 0;
-            while j - k * w[i] >= 0 {
-                let candidate = dp[i][(j - k * w[i]) as usize] + k * v[i];
-                if candidate > max {
-                    max = candidate;
-                }
-                k += 1;
+            if j < w[i] {
+                dp[(i + 1) as usize][j as usize] = dp[i as usize][j as usize];
+            } else {
+                dp[(i + 1) as usize][j as usize] = cmp::max(
+                    dp[i as usize][j as usize],
+                    dp[(i + 1) as usize][(j - w[i]) as usize] + v[i],
+                );
             }
-            dp[(i + 1) as usize][j as usize] = max;
         }
     }
     // println!("{:?}", dp);
