@@ -1,63 +1,69 @@
+use std::cmp::Ordering;
+
 #[derive(Debug)]
-struct Node {
-    value: i32,
-    lch: Option<Box<Node>>,
-    rch: Option<Box<Node>>,
+pub enum BST<T: Ord> {
+    Leaf {
+        value: T,
+        left: Box<BST<T>>,
+        right: Box<BST<T>>,
+    },
+    Empty,
 }
 
-impl Node {
-    pub fn new(num: i32) -> Self {
-        Self {
-            value: num,
-            lch: None,
-            rch: None,
+impl<T: Ord> BST<T> {
+    pub fn new() -> Self {
+        BST::Empty
+    }
+
+    pub fn create(value: T) -> Self {
+        BST::Leaf {
+            value,
+            left: Box::new(BST::Empty),
+            right: Box::new(BST::Empty),
         }
     }
 
-    fn insert(&mut self, value: i32) {
-        if value >= self.value {
-            if let Some(rch_node) = &mut self.rch {
-                rch_node.insert(value)
-            } else {
-                self.rch = Some(Box::new(Self::new(value)));
-            }
-        } else {
-            if let Some(lch_node) = &mut self.lch {
-                lch_node.insert(value)
-            } else {
-                self.lch = Some(Box::new(Self::new(value)));
-            }
+    pub fn has_left(&self) -> bool {
+        return match self {
+            Self::Empty => false,
+            Self::Leaf {
+                ref value,
+                ref left,
+                ref right,
+            } => match **left {
+                BST::Empty => false,
+                BST::Leaf { value, left, right } => true,
+            },
+        };
+    }
+
+    pub fn insert(&mut self, new_value: T) {
+        match self {
+            BST::Leaf {
+                ref value,
+                ref mut left,
+                ref mut right,
+            } => match new_value.cmp(value) {
+                Ordering::Less => left.insert(new_value),
+                Ordering::Greater => right.insert(new_value),
+                Ordering::Equal => return,
+            },
+            BST::Empty => *self = BST::create(new_value),
         }
     }
 
-    fn search(&self, value: i32) -> bool {
-        if value == self.value {
-            true
-        } else if value > self.value {
-            if let Some(rch_node) = &self.rch {
-                if rch_node.value == value {
-                    true
-                } else {
-                    rch_node.search(value)
-                }
-            } else {
-                false
-            }
-        } else {
-            if let Some(lch_node) = &self.lch {
-                if lch_node.value == value {
-                    true
-                } else {
-                    lch_node.search(value)
-                }
-            } else {
-                false
-            }
+    pub fn delete(&mut self, value: T) {
+        /*
+        let mut all_none = false;
+        match self {
+            BST::Empty => {}
+            BST::Leaf {
+                ref value,
+                ref mut left,
+                ref mut right,
+            } => {}
         }
-    }
-
-    fn delete(&mut self, value: i32) {
-        // TODO: implement
+        */
     }
 }
 
@@ -67,7 +73,12 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use super::Node;
+    #[test]
+    fn test_has_left() {
+        let n = super::BST::create(3);
+        assert_eq!(n.has_left(), false);
+    }
+    /*
 
     #[test]
     fn it_works() {
@@ -88,4 +99,5 @@ mod tests {
         assert_eq!(node.search(1), false);
         assert_eq!(node.search(7), false);
     }
+    */
 }
