@@ -24,17 +24,17 @@ impl<T: Ord> BST<T> {
     }
 
     pub fn has_left(&self) -> bool {
-        return match self {
+        match self {
             Self::Empty => false,
             Self::Leaf {
-                ref value,
-                ref left,
-                ref right,
-            } => match **left {
+                value,
+                box left,
+                right,
+            } => match left {
                 BST::Empty => false,
-                BST::Leaf { value, left, right } => true,
+                _ => true,
             },
-        };
+        }
     }
 
     pub fn insert(&mut self, new_value: T) {
